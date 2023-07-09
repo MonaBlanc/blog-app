@@ -1,3 +1,9 @@
+---
+title : Clever Lazy Loading for Javascript
+meta : Maybe you’ve heard of it, maybe you haven’t. Zig is a new programming language that seems to be growing in popularity. Let’s do a quick dive into what it is, why it’s unique, and what sort of things you would use it for. 
+slug : clever-lazy-loading-for-javascript
+---
+
 Maybe you’ve heard of it, maybe you haven’t. Zig is a new programming language that seems to be growing in popularity. Let’s do a quick dive into what it is, why it’s unique, and what sort of things you would use it for. (Ed Note: Other than “for great justice“, naturally.)
 
 ## What Is It?
