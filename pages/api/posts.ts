@@ -5,7 +5,7 @@ const path = require('path');
 
 const handler: NextApiHandler = (req, res) => {
     const { method } = req;
-
+    
     switch (method) {
         case 'GET': {
             const data = readPostsInfo();
