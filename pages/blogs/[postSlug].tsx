@@ -1,16 +1,28 @@
 import fs from "fs";
 import matter from "gray-matter";
-import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType, NextPage } from "next";
+import {
+    GetStaticPaths,
+    GetStaticProps,
+    InferGetStaticPropsType,
+    NextPage,
+} from "next";
+import { MDXRemote, MDXRemoteSerializeResult } from "next-mdx-remote";
+import { serialize } from "next-mdx-remote/serialize";
 import path from "path";
 import { ParsedUrlQuery } from "querystring";
 
 type Props = InferGetStaticPropsType<typeof getStaticProps>;
 
-const SinglePage: NextPage<Props> = (props) => {
-  return <div>
-    <h1>{props.post.title}</h1>
-    <p>{props.post.content}</p>
-  </div>;
+const SinglePage: NextPage<Props> = ({ post }) => {
+  const { content, title } = post;
+  return (
+    <div className="max-w-3xl mx-auto">
+      <h1 className="font-semibold text-2xl py-5">{title}</h1>
+      <div className="prose pb-20">
+        <MDXRemote {...content} />
+      </div>
+    </div>
+  );
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
@@ -30,28 +42,29 @@ export const getStaticPaths: GetStaticPaths = async () => {
 };
 
 interface IStaticProps extends ParsedUrlQuery {
-        postSlug: string
+  postSlug: string;
 }
 
 type Post = {
-    post: {
-        content: string;
-        title: string;
-    }
-}
+  post: {
+    content: MDXRemoteSerializeResult;
+    title: string;
+  };
+};
 
-export const getStaticProps: GetStaticProps<Post> = (context) => {
+export const getStaticProps: GetStaticProps<Post> = async (context) => {
   const { params } = context;
   const { postSlug } = params as IStaticProps;
 
   const filePath = path.join(process.cwd(), "posts/" + postSlug + ".md");
   const fileContents = fs.readFileSync(filePath, "utf8");
-  const { data, content } = matter(fileContents);
+  //   const { data, content } = matter(fileContents);
+  const source: any = await serialize(fileContents, { parseFrontmatter: true });
   return {
     props: {
       post: {
-        content,
-        title: data.title,
+        content: source,
+        title: source.frontmatter.title,
       },
     },
   };
